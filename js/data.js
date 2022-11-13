@@ -21,15 +21,16 @@ const MESSAGES_TO_THE_POST = [
 const USERNAME  = ['Kotik', 'Keksik', 'Barsik', 'Kuzya', 'Tom', 'Murzik', 'Timon', 'Taison', 'Simon', 'Djek'];
 
 const AMOUNT_OF_PHOTOS  = 25;
-const arrayIdPhoto = Array(5 * AMOUNT_OF_PHOTOS ).fill(false);
-const arrayId = Array(AMOUNT_OF_PHOTOS ).fill(false);
-const arrayURL = Array(AMOUNT_OF_PHOTOS ).fill(false);
+const arrayIdPhoto = Array(5 * AMOUNT_OF_PHOTOS ).fill(true);
+const arrayId = Array(AMOUNT_OF_PHOTOS ).fill(true);
+const arrayURL = Array(AMOUNT_OF_PHOTOS ).fill(true);
 
 const getId = (array) => {
   for (let i = 0; i < array.length; i++) {
     if (array[i]) {
       array[i] = false;
-      return i++;
+      i += 1;
+      return i;
     }
   }
 };
@@ -58,7 +59,7 @@ const getPost = () => ({
   comments: getComments()
 });
 
-const getPosts = () => Array.from({ length: DESCRIPTION_FOR_PHOTO }, getPost);
+const getPosts = () => Array.from({ length: AMOUNT_OF_PHOTOS }, getPost);
 
 export {getPosts};
 
