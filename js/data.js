@@ -1,21 +1,24 @@
 import { getRandom, getRandomObj } from './util.js';
 
 const DESCRIPTION_FOR_PHOTO = [
-  'The best is yet to come',
-  'Beauty in simplicity',
-  'I\'m not lazy. I\'m just very relaxed',
-  'Live today, Live now',
-  'Kittens, well, where without them?',
-  'Cool',
-  'Nice',
-  'Beautiful',
-  'My favourite photo!',
-  'I like this very much'
+  'Чувствую себя лучше!',
+  'Красивое фото',
+  'Я не ленивый, я просто люблю отдыхать',
+  'Живи сегодня, живи сейчас',
+  'Котята, ну куда же без них?',
+  'Просто и без слов',
+  'Невероятно'
 ];
 
 const MESSAGES_TO_THE_POST = [
-  'In general, everything is good. But not all.',
-  'I slipped on a banana peel and dropped the camera on the cat and got a better AMOUNT_OF_PHOTOS .'
+  'Всё отлично!',
+  'Мое любимое фото',
+  'Вау, впечатляет',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
 const USERNAME  = ['Kotik', 'Keksik', 'Barsik', 'Kuzya', 'Tom', 'Murzik', 'Timon', 'Taison', 'Simon', 'Djek'];
