@@ -1,11 +1,11 @@
 import {getPosts} from './data.js';
 import {pictureRender} from './pictures.js';
-import {fullscreenOpen, bigPicture} from './fullscreen_pictures.js';
+import {fullscreenOpen} from './fullscreen_pictures.js';
+import './add_image.js';
 
 const pictures = document.querySelector('.pictures');
 const posts = getPosts();
 
-console.log(posts);
 for (const post of posts) {
   pictureRender(post);
 }
@@ -15,7 +15,6 @@ const addHandler = (post) => {
   const picture = pictures.querySelector(srcImage).parentNode;
   picture.addEventListener('click', (evt) => {
     evt.preventDefault();
-    document.body.classList.add('modal-open');
     fullscreenOpen(post);
   });
 };
@@ -23,16 +22,3 @@ const addHandler = (post) => {
 for (const post of posts) {
   addHandler(post);
 }
-
-const closeButton = bigPicture.querySelector('.big-picture__cancel');
-closeButton.addEventListener('click', () => {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-});
-
-document.addEventListener('keydown', (evt) => {
-  if (evt.key === 'Escape') {
-    bigPicture.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-  }
-});

@@ -32,8 +32,7 @@ const getId = (array) => {
   for (let i = 0; i < array.length; i++) {
     if (array[i]) {
       array[i] = false;
-      i += 1;
-      return i;
+      return i + 1;
     }
   }
 };
