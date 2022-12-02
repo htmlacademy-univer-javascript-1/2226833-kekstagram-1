@@ -18,16 +18,16 @@ inputImage.addEventListener('change', () => {
   editFullscreen.classList.remove('hidden');
 });
 
-function closeEditFullscreenOnEscape(evt) {
-  if (keyEscape(evt)) {
-    closeCurrentImage();
-  }
-}
-
 const form = document.querySelector('.img-upload__form');
 const hashtagInput = form.querySelector('.text__hashtags');
 const commentInput = form.querySelector('.text__description');
 const submitButton = form.querySelector('.img-upload__submit');
+
+function closeEditFullscreenOnEscape(evt) {
+  if (keyEscape(evt) && evt.target !== hashtagInput && evt.target !== commentInput) {
+    closeCurrentImage();
+  }
+}
 
 let hashtagResult = true;
 let descriptionResult = true;

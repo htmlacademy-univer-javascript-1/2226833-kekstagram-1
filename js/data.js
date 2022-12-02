@@ -18,13 +18,17 @@ const MESSAGES_TO_THE_POST = [
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
   'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
+  'Могло быть и лучше',
+  'Ура, я так ждал этот пост!!!',
+  'Снова ты?!',
+  'Да тут и обсуждать то нечего'
 ];
 
 const USERNAME  = ['Kotik', 'Keksik', 'Barsik', 'Kuzya', 'Tom', 'Murzik', 'Timon', 'Taison', 'Simon', 'Djek'];
 
 const AMOUNT_OF_PHOTOS  = 25;
-const arrayIdPhoto = Array(5 * AMOUNT_OF_PHOTOS ).fill(true);
+const arrayIdPhoto = Array(20 * AMOUNT_OF_PHOTOS ).fill(true);
 const arrayId = Array(AMOUNT_OF_PHOTOS ).fill(true);
 const arrayURL = Array(AMOUNT_OF_PHOTOS ).fill(true);
 
@@ -45,7 +49,7 @@ const getComment = () => ({
 });
 
 const getComments = () => {
-  const number = getRandom(1, 5);
+  const number = getRandom(4, 16);
   const comments = Array(number);
   for (let i = 0; i < number; i++) {
     comments[i] = getComment();
@@ -55,7 +59,7 @@ const getComments = () => {
 
 const getPost = () => ({
   id: getId(arrayId ),
-  url: `photos/${getId(arrayURL)}.jpg`,
+  url: `photos/${getId(arrayURL, 1, 25)}.jpg`,
   description: getRandomObj(DESCRIPTION_FOR_PHOTO ),
   likes: getRandom(10, 300),
   comments: getComments()

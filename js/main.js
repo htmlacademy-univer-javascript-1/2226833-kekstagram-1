@@ -13,8 +13,7 @@ for (const post of posts) {
 const addHandler = (post) => {
   const srcImage = `img[src="${post.url}"]`;
   const picture = pictures.querySelector(srcImage).parentNode;
-  picture.addEventListener('click', (evt) => {
-    evt.preventDefault();
+  picture.addEventListener('click', () => {
     fullscreenOpen(post);
   });
 };
