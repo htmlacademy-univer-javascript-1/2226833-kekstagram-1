@@ -22,4 +22,6 @@ checkStringLength('Mur Chao!', 20);
 
 const getRandomObj = (objects) => objects[getRandom(0, objects.length - 1)];
 
-export {getRandom, getRandomObj};
+const keyEscape = (evt) => evt.key === 'Escape';
+
+export {getRandom, getRandomObj, keyEscape};
