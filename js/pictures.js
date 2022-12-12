@@ -1,4 +1,5 @@
-import { getPosts } from './data.js';
+import { getData } from './importer.js';
+import { showAlert } from './util.js';
 import { fullscreenOpen } from './fullscreen_pictures.js';
 
 const pictureTemplate = document.querySelector('#picture').content;
@@ -17,10 +18,14 @@ const pictureRender = (post) => {
 };
 
 const picturesRender = () => {
-  const posts = getPosts();
-  for (const post of posts) {
-    pictureRender(post);
-  }
+  getData((posts) => {
+    for (const post of posts) {
+      pictureRender(post);
+    }
+  },
+  () => {
+    showAlert('Ошибка загрузки данных!', 0);
+  });
 };
 
 export { picturesRender };

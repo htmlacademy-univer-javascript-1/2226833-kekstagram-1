@@ -14,14 +14,31 @@ const getRandom = (from, to) => {
 
 getRandom(0, 100);
 
-function checkStringLength(string, length) {
-  return string.length < length;
-}
-
-checkStringLength('Mur Chao!', 20);
+const  checkStringLength = (string, maxLength) => string.length < maxLength;
 
 const getRandomObj = (objects) => objects[getRandom(0, objects.length - 1)];
 
 const keyEscape = (evt) => evt.key === 'Escape';
 
-export {getRandom, getRandomObj, keyEscape};
+const showAlert = (message, alertTime) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '100';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = '0';
+  alertContainer.style.top = '0';
+  alertContainer.style.right = '0';
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, alertTime);
+};
+
+export {getRandom, getRandomObj, keyEscape, checkStringLength, showAlert};

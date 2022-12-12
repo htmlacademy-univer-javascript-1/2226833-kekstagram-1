@@ -22,15 +22,16 @@ function closeBigPictureEscapedown(evt) {
 const renderComment = (comment) => {
   const li = document.createElement('li');
   li.classList.add('social__comment');
-  const p = document.createElement('p');
-  p.classList.add('social__text');
-  p.textContent = comment.message;
   const img = document.createElement('img');
   img.classList.add('social__picture');
   img.src = comment.avatar;
   img.alt = comment.name;
   img.width = 35;
   img.height = 35;
+  const p = document.createElement('p');
+  p.classList.add('social__text');
+  p.textContent = comment.message;
+
   li.appendChild(img);
   li.appendChild(p);
   li.classList.add('hidden');
@@ -48,10 +49,10 @@ const initComments = (comments) => {
     renderComment(comment);
   }
   let initNumber;
-  if (comments.length > 3) {
-    initNumber = 3;
+  if (comments.length > 5) {
+    initNumber = 5;
     loaderComments.classList.remove('hidden');
-    countComments.textContent = `3 из ${comments.length} комментариев`;
+    countComments.textContent = `5 из ${comments.length} комментариев`;
   } else {
     initNumber = comments.length;
     loaderComments.classList.add('hidden');
@@ -78,12 +79,12 @@ function loadComments() {
   countComments.textContent = `${i} из ${elemComments.length} комментариев`;
   if (commentCounter >= elemComments.length) { loaderComments.classList.add('hidden');}
 }
+const bigPictureIMG = bigPicture.querySelector('.big-picture__img');
+const likesPicture = bigPicture.querySelector('.likes-count');
+const descriptionPicture = bigPicture.querySelector('.social__caption');
 
 const fullscreenOpen = (post) => {
-  const bigPictureIMG = bigPicture.querySelector('.big-picture__img');
-  const likesPicture = bigPicture.querySelector('.likes-count');
-  const descriptionPicture = bigPicture.querySelector('.social__caption');
-
+  commentCounter = 0;
   document.body.classList.add('modal-open');
   bigPicture.classList.remove('hidden');
   closeButton.addEventListener('click', closeBigPicture);
@@ -93,7 +94,6 @@ const fullscreenOpen = (post) => {
   likesPicture.textContent = post.likes;
   descriptionPicture.textContent = post.description;
 
-  commentCounter = 0;
   const comments = post.comments;
   initComments(comments);
 };
