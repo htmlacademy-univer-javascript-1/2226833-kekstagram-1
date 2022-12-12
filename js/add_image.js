@@ -1,4 +1,5 @@
-import {keyEscape} from './util.js';
+import {keyEscape, checkStringLength} from './util.js';
+import { sendData } from './importer.js';
 
 //Switch for editor view
 const inputImage = document.querySelector('#upload-file');
@@ -24,19 +25,26 @@ const slider = editFullscreen.querySelector('.effect-level__slider');
 const sliderBox = editFullscreen.querySelector('.img-upload__effect-level');
 let checkBox;
 
-const setInitialValues = () => {
-  document.querySelectorAll('.text__error').forEach((el) => el.remove());
+const patternSuccess = document.querySelector('#success').content.querySelector('.success');
+const patternError = document.querySelector('#error').content.querySelector('.error');
+const submissionSuccess = patternSuccess.cloneNode(true);
+const submissionError = patternError.cloneNode(true);
+const closeButtonSuccess = submissionSuccess.querySelector('.success__button');
+const closeButtonError = submissionError.querySelector('.error__button');
 
-  inputImage.value = '';
+
+const setInitialValues = () => {
   hashtagInput.value = '';
   commentInput.value = '';
-  effectValue.value = '';
   submitButton.disabled = false;
+  document.querySelectorAll('.text__error').forEach((el) => el.remove());
   sizeImage.value = '100%';
   editImage.style.transform = 'scale(1)';
+  effectValue.value = '';
   editImage.style.filter = '';
   editImage.className = '';
   checkBox = 'effect-none';
+  editFullscreen.querySelector('#effect-none').checked = true;
   sliderBox.classList.add('hidden');
 };
 
@@ -48,7 +56,15 @@ const closeCurrentImage = () => {
   hashtagInput.removeEventListener('keydown', escapeStop);
   commentInput.removeEventListener('keydown', escapeStop);
   slider.noUiSlider.destroy();
+  inputImage.value = '';
+  setInitialValues();
 };
+
+function closeEditFullscreenOnEscape(evt) {
+  if (keyEscape(evt) && !document.body.contains(submissionError)) {
+    closeCurrentImage();
+  }
+}
 
 function escapeStop(evt) {
   evt.stopPropagation();
@@ -64,14 +80,15 @@ const createSlider = () => {
   });
 };
 
-inputImage.addEventListener('change', () => {
+inputImage.addEventListener('change', (evt) => {
+  setInitialValues();
+  evt.preventDefault();
+  editFullscreen.classList.remove('hidden');
+  document.body.classList.add('modal-open');
   closeButton.addEventListener('click', closeCurrentImage);
   document.addEventListener('keydown', closeEditFullscreenOnEscape);
-  document.body.classList.add('modal-open');
-  editFullscreen.classList.remove('hidden');
   hashtagInput.addEventListener('keydown', escapeStop);
   commentInput.addEventListener('keydown', escapeStop);
-  setInitialValues();
   resizeButton.addEventListener('click', resizeImage);
   zoomButton.addEventListener('click', zoomImage);
   effects.addEventListener('change', setPictureEffect);
@@ -80,12 +97,6 @@ inputImage.addEventListener('change', () => {
     setEffect();
   });
 });
-
-function closeEditFullscreenOnEscape(evt) {
-  if (keyEscape(evt)) {
-    closeCurrentImage();
-  }
-}
 
 function resizeImage() {
   let currentSize = parseInt(sizeImage.value.replace('%', ''), 10);
@@ -178,6 +189,15 @@ function setEffect() {
 let hashtagResult = true;
 let descriptionResult = true;
 
+const pristine = new Pristine(form, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__item--invalid',
+  successClass: 'img-upload__item--valid',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'text__error'
+}, true);
+
 const controlSubmit = () => {
   if (!hashtagResult || !descriptionResult) {
     submitButton.setAttribute('disabled', 'false');
@@ -197,27 +217,77 @@ const validateHashtag = (value) => {
   return result;
 };
 
-const isCorrectComment = (value) => value.length < 140;
-
-const validateComment = (value) => {
-  const result = isCorrectComment(value);
+const validateComment = (string) => {
+  const result = checkStringLength(string, 140);
   descriptionResult = result;
   controlSubmit();
   return result;
 };
 
-const pristine = new Pristine(form, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__item--invalid',
-  successClass: 'img-upload__item--valid',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
-  errorTextClass: 'img-upload__error'
-}, true);
-
 pristine.addValidator(hashtagInput, validateHashtag, 'Некорректный хэштег');
 pristine.addValidator(commentInput, validateComment, 'Комментарий не должен превышать 140 символов');
 
-form.addEventListener('submit', () => {
-  pristine.validate();
+const closeSuccessMessage = () => {
+  closeButtonSuccess.removeEventListener('click', closeSuccessMessage);
+  document.removeEventListener('keydown', closeSuccessMessageOnEscape);
+  document.removeEventListener('click', clickOutOfSuccessBlock);
+  document.body.removeChild(submissionSuccess);
+};
+
+const closeErrorMessage = () => {
+  closeButtonError.removeEventListener('click', closeErrorMessage);
+  document.removeEventListener('keydown', closeErrorMessageOnEscape);
+  document.removeEventListener('click', clickOutOfErrorBlock);
+  document.body.removeChild(submissionError);
+  editFullscreen.classList.remove('hidden');
+};
+
+function clickOutOfSuccessBlock(evt) {
+  if (evt.target === submissionSuccess) { closeSuccessMessage(); }}
+
+function closeSuccessMessageOnEscape(evt) {
+  if (keyEscape(evt)) {
+    evt.stopPropagation();
+    closeSuccessMessage();
+  }
+}
+
+function clickOutOfErrorBlock(evt) {
+  if (evt.target === submissionError) { closeErrorMessage(); }}
+
+function closeErrorMessageOnEscape(evt) {
+  if (keyEscape(evt)) {
+    evt.stopPropagation();
+    closeErrorMessage();
+  }
+}
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if (isValid) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Опубликовываю...';
+    sendData(
+      () => {
+        closeCurrentImage();
+        closeButtonSuccess.addEventListener('click', closeSuccessMessage);
+        document.addEventListener('click', clickOutOfSuccessBlock);
+        document.addEventListener('keydown', closeSuccessMessageOnEscape);
+        document.body.appendChild(submissionSuccess);
+        submitButton.disabled = false;
+        submitButton.textContent = 'Опубликовать';
+      },
+      () => {
+        editFullscreen.classList.add('hidden');
+        closeButtonError.addEventListener('click', closeErrorMessage);
+        document.addEventListener('click', clickOutOfErrorBlock);
+        document.addEventListener('keydown', closeErrorMessageOnEscape);
+        document.body.appendChild(submissionError);
+        submitButton.disabled = false;
+        submitButton.textContent = 'Опубликовать';
+      },
+      new FormData(evt.target),
+    );
+  }
 });
